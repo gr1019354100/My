@@ -20,8 +20,8 @@
 struct Material
 {
 	Material(
-		const cv::Vec3f& _color, float _ks, float _kd, float _ka, float _a) 
-		: diffuse_color(_color), ks(_ks), kd(_kd), ka(_ka), alpha(_a) {}
+		const cv::Vec3f& _color, float _ks, float _kd, float _a) 
+		: diffuse_color(_color), ks(_ks), kd(_kd), alpha(_a) {}
 
 	Material() {}
 
@@ -35,14 +35,13 @@ struct Material
 struct Light
 {
 	Light(
-		const cv::Vec3f& position, const float& diffuse, const float& intensive) 
-		: m_position(position), id(diffuse) , is(intensive) {}
+		const cv::Vec3f& position, const float& intensive) 
+		: m_position(position), is(intensive) {}
 
 	Light() {}
 
 	cv::Vec3f m_position;
-	float id; // diffuse
-	float is; // intensities
+	float is; // intensive
 };
 
 struct Sphere
@@ -114,7 +113,7 @@ cv::Vec3f cast_ray(const cv::Vec3f& orig,
 		if (scene_intersect(shadow_orig, light_dir, spheres, shadow_pt, shadow_N, tmpmaterial) && cv::norm(shadow_pt - shadow_orig) < light_distance)
 			continue;
 
-		diffuse_light_intensity += lights[i].id * std::max(0.f, light_dir.dot(N));
+		diffuse_light_intensity += lights[i].is * std::max(0.f, light_dir.dot(N));
 
 		// phong reflection on sphere
 
@@ -156,8 +155,8 @@ void render(const std::vector<Sphere>& spheres, const std::vector<Light>& lights
 
 int main()
 {
-	Material ivory_arylic_glass(cv::Vec3f(0.4, 0.4, 0.3), 0.3, 0.6, 1, 50.);
-	Material red_rubber(cv::Vec3f(0.3, 0.1, 0.1), 0.1, 0.9, 1, 10.);
+	Material ivory_arylic_glass(cv::Vec3f(0.4, 0.4, 0.3), 0.3, 0.6, 50.);
+	Material red_rubber(cv::Vec3f(0.3, 0.1, 0.1), 0.1, 0.9, 10.);
 
 	std::vector<Sphere> spheres;
 	spheres.push_back(Sphere(cv::Vec3f(-3, 0, -16), 2, ivory_arylic_glass));
@@ -166,9 +165,9 @@ int main()
 	spheres.push_back(Sphere(cv::Vec3f(7, 5, -18), 4, red_rubber));
 
 	std::vector<Light>  lights;
-	lights.push_back(Light(cv::Vec3f(-20, 20, 20), 1.5, 1.5));
-	lights.push_back(Light(cv::Vec3f(30, 50, -25), 1.8 ,1.8));
-	lights.push_back(Light(cv::Vec3f(30, 20, 30), 1.7, 1.7));
+	lights.push_back(Light(cv::Vec3f(-20, 20, 20), 1.5));
+	lights.push_back(Light(cv::Vec3f(30, 50, -25), 1.8));
+	lights.push_back(Light(cv::Vec3f(30, 20, 30), 1.7));
 
 	render(spheres, lights);
 	return 0;
